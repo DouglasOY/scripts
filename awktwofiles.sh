@@ -143,7 +143,7 @@ END
     }
 }
 '
-compare standard
+standard compare 
  
 
  
