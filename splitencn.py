@@ -48,9 +48,9 @@ def dofile(f):
             continue
 
         if isascii(line):
-            fenfd.write(line)
+            fenfd.write(line + '\n')
         else:
-            fcnfd.write(line)
+            fcnfd.write(line + '\n')
 
     fenfd.close()
     fcnfd.close()
