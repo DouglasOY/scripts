@@ -44,6 +44,9 @@ def dofile(f):
     fcnfd = file(fcn, 'a', 0)
 
     for line in content:
+        if len(line) < 5:
+            continue
+
         if isascii(line):
             fenfd.write(line)
         else:
