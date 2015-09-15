@@ -38,8 +38,8 @@ def dofile(f):
     with open(f, 'r') as fh:
         content = fh.readlines()
 
-    fen = f + '_en'
-    fcn = f + '_cn'
+    fen = 'en_' + f
+    fcn = 'cn_' + f
     fenfd = file(fen, 'a', 0)
     fcnfd = file(fcn, 'a', 0)
 
@@ -55,8 +55,8 @@ def dofile(f):
     fenfd.close()
     fcnfd.close()
 
-    fnew = f + '_new'
-    combinationfile(fen, fcn, fnew)
+    fnew = 'new_' + f
+    combinationfile(fcn, fen, fnew)
     os.remove(fen)
     os.remove(fcn)
 
