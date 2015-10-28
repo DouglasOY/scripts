@@ -6,43 +6,38 @@ import serial
 import time
 import shutil
 import telnetlib
-import datetime 
+import datetime
+import getopt
 
-# ONLY need change the BOARD and SETSERVERIP  
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BOARD           = 3                                 #   1,            2,            3
-TESTUSER        = 'auto'
-SETSERVERIP     = 'setenv serverip 192.168.0.190'
+# telnet keywords
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TTY             = '/dev/ttyU'                       #   '/dev/ttyU0'  '/dev/ttyU1'  '/dev/ttyU2'  
-SETIPADDR       = 'setenv ipaddr 192.168.0.25'      #   251           252           253
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-CASELIST       = ['ktos_package/ktos_package.bin']
-
 stateon         = "State        : ON"
 stateoff        = "State        : OFF"
 TELNETRETRY     = 20
 MINICOMCRLF     = '\n'
 TELNETCRLF      = '\r'
-ECHOCASE        = 'echo '
-GOENTRY         = 'go 200000'
 RESETWAIT       = 10
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# tftp keywords
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HITKEY          = 'Hit any key to stop autoboot'
 BYTESTRANSFER   = 'Bytes transferred = '
 TFTPERR1        = 'Retry count exceeded; starting again'
 TFTPERR2        = 'Not retrying'
 TFTPERR3        = 'Auto-negotiation error is present'
 
-TESTDONE        = "It's built on"
-TESTCOUNT       = 2000
-
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-WAITAUTOBOOT01  = 2
+# wait seconds in uboot
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+WAITAUTOBOOT1   = 2
 WAITAUTOBOOT2   = 6
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# telnet to the board manager
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 def do_telnet(host, username, password, board):
     tn = telnetlib.Telnet(host)
 
@@ -102,14 +97,14 @@ def do_telnet(host, username, password, board):
         print "the board does not exist !! "
         tn.close()
         return 300
-        
+
     tn.read_until("\r\n> ")
     # ------- Zedboard-1 -----------
     #    Name         : Zedboard-1
     #    Outlet       : 2
     #    State        : ON
-    #    1- Control Outlet    
-    #    2- Configure Outlet  
+    #    1- Control Outlet
+    #    2- Configure Outlet
 
     tn.write("1" + TELNETCRLF)
     controloutlet  = tn.read_until("\r\n> ")
@@ -123,10 +118,10 @@ def do_telnet(host, username, password, board):
     #  4- Delayed On
     #  5- Delayed Off
     #  6- Delayed Reboot
-    #  7- Cancel 
+    #  7- Cancel
 
-    poweron  = controloutlet.find(stateon)    
-    poweroff = controloutlet.find(stateoff)    
+    poweron  = controloutlet.find(stateon)
+    poweroff = controloutlet.find(stateoff)
     if (poweron > 20) and (poweroff == -1):
         tn.write("3" + TELNETCRLF)
         print "shutdown and delay for 5 seconds, reboot"
@@ -187,64 +182,56 @@ def do_telnet(host, username, password, board):
     return 100
 
 
-def do_powercontrol():
-    global BOARD 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# power on or reboot the board
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+def do_powercontrol(board):
     HOST = "192.168.0.195"
     USER = "apc"
     PASSWORD  = "apc"
     telneti = 0
-    while telneti < TELNETRETRY: 
-        ret = do_telnet(HOST, USER, PASSWORD, BOARD)
+    while telneti < TELNETRETRY:
+        ret = do_telnet(HOST, USER, PASSWORD, board)
         telneti += 1
         if ret == 100:
             print "power control successfully"
             telneti -= 1
             break
         elif ret == 200:
-            print "== telnet retry %d ==" % telneti 
+            print "== telnet retry %d ==" % telneti
             time.sleep(8)
         elif ret == 300:
             print "the board does not exist !! "
             break
-    
-    if telneti == TELNETRETRY: 
+
+    if telneti == TELNETRETRY:
         print "========= telnet failed ============="
         return False
     else:
         time.sleep(RESETWAIT)
         return True
-    
 
-class Miniterm(object):
-    def __init__(self):
+
+class Miniterm:
+    def __init__(self, board, runtime):
+        self.board = board
+        self.runtime = runtime
         self.ser = serial.Serial()
         self.ser.baudrate = 115200
-        global TTY
-        self.ser.port = TTY
         self.ser.timeout = 1
+        # '/dev/ttyU0'  '/dev/ttyU1'  '/dev/ttyU2'
+        TTY = '/dev/ttyU' + str(self.board - 1)
+        self.ser.port = TTY
 
     def reader(self):
         now = datetime.datetime.now()
-        exittime = now + datetime.timedelta(seconds=200)
+        exittime = now + datetime.timedelta(seconds=self.runtime)
         while True:
             data = self.ser.readline()
             sys.stdout.write(data)
             iternow = datetime.datetime.now()
             if iternow >= exittime:
                 break
-
-    def readtestdone(self):
-        readtimes = 0
-        while True:
-            data = self.ser.readline()
-            if data:
-                sys.stdout.write(data)
-                if (data.find(TESTDONE) >= 0):
-                    break
-            else:
-                readtimes += 1
-                if (readtimes > TESTCOUNT):
-                    break
 
     def readhitkey(self):
         while True:
@@ -273,7 +260,7 @@ class Miniterm(object):
         time.sleep(0.5)
 
     def open(self):
-        try: 
+        try:
             self.ser.open()
         except Exception, e:
             print e
@@ -283,7 +270,7 @@ class Miniterm(object):
             print '!!!! open console True  !!!!'
             return True
         else:
-            print '!!!! open console False !!!!' 
+            print '!!!! open console False !!!!'
             return False
 
     def close(self):
@@ -291,117 +278,138 @@ class Miniterm(object):
         time.sleep(1)
 
 
-def updateArguments():
-    global TTY
-    global BOARD
-    global TESTUSER
-
-    if len(sys.argv) >= 2:
-        BOARD = int(sys.argv[1])
-
-    if len(sys.argv) >= 3:
-        TESTUSER = sys.argv[2]
-
-    global SETIPADDR 
-    if (BOARD == 1):
-        TTY = TTY + '0'
-        SETIPADDR = SETIPADDR + '1'
-    elif (BOARD == 2):
-        TTY = TTY + '1'
-        SETIPADDR = SETIPADDR + '2'
-    elif (BOARD == 3):
-        TTY = TTY + '2'
-        SETIPADDR = SETIPADDR + '3'
-    else:
-        print "the board does not exist !! "
-    
-    print "TTY == %s " %  TTY
-    print "SETIPADDR == %s " %  SETIPADDR  
-
-def main():
+def main(board, ip, casename, runtime):
     # print '===================  start   ====================='
     # print time.strftime('%Y_%m_%d_%H_%M_%S',time.localtime(time.time()))
     # print '=================================================='
-    global TESTUSER
-    caseindex = 1
-    for casename in CASELIST:
-        casename = TESTUSER + '/' + casename
-        '''
-        print case name in terminal
-        '''
-        print '\n'
-        print '----------------------------------------'
-        print  casename
-        print '----------------------------------------'
-        caseindex += 1
-        
-        '''
-        open the console
-        '''
-        ret = do_powercontrol()
-        if not ret:
-            print "power control failed."
-            return 22
-        
-        global BOARD
-        if  (BOARD == 4):
-            time.sleep(WAITAUTOBOOT01)
-            miniterm = Miniterm()
-            miniterm.open() 
-            miniterm.readhitkey() 
-        elif (BOARD == 2) or (BOARD == 1) or (BOARD == 3):
-            time.sleep(WAITAUTOBOOT2)
-            miniterm = Miniterm()
-            miniterm.open() 
-        else:
-            print "Board not exist."
-            return 33
+    '''
+    print case name
+    '''
+    print '----------------------------------------'
+    print  casename
+    print '----------------------------------------'
 
-        miniterm.writer(MINICOMCRLF)
-        miniterm.writer(MINICOMCRLF)
-        
-        '''
-        set environments
-        '''
-        miniterm.writer(SETSERVERIP + MINICOMCRLF)
-        global SETIPADDR 
-        miniterm.writer(SETIPADDR + MINICOMCRLF)
-        
-        '''
-        tftp
-        '''
-        TFTPDOWNLOAD = 'tftp 200000 ' + casename
-        miniterm.writer(TFTPDOWNLOAD + MINICOMCRLF)
-        ret = miniterm.readbytestransfer()
-        if not ret:
-            print "tftp error"
-            return 44
-        
-        '''
-        run the case
-        '''
-        miniterm.writer(GOENTRY + MINICOMCRLF)
-        
-        miniterm.reader() 
-        # miniterm.readtestdone() 
+    '''
+    open the console
+    '''
+    ret = do_powercontrol(board)
+    if not ret:
+        print "power control failed."
+        return 2
 
-        '''
-        close the console
-        '''
-        miniterm.close()
-    
-    return 55
+    # old uboot
+    if (board == 4):
+        time.sleep(WAITAUTOBOOT1)
+        miniterm = Miniterm(board, runtime)
+        miniterm.open()
+        miniterm.readhitkey()
+    # new uboot
+    elif (board == 1) or (board == 2) or (board == 3):
+        time.sleep(WAITAUTOBOOT2)
+        miniterm = Miniterm(board, runtime)
+        miniterm.open()
+    else:
+        print "Board not exist."
+        return 3
+
+    miniterm.writer(MINICOMCRLF)
+    miniterm.writer(MINICOMCRLF)
+
+    '''
+    set environments
+    '''
+    SETSERVERIP = 'setenv serverip ' + ip
+    miniterm.writer(SETSERVERIP + MINICOMCRLF)
+
+    # 192.168.0.251 / 192.168.0.252 / 192.168.0.253
+    SETIPADDR = 'setenv ipaddr 192.168.0.25' + str(board)
+    miniterm.writer(SETIPADDR + MINICOMCRLF)
+
+    '''
+    tftp
+    '''
+    TFTPDOWNLOAD = 'tftp 200000 ' + casename
+    miniterm.writer(TFTPDOWNLOAD + MINICOMCRLF)
+    ret = miniterm.readbytestransfer()
+    if not ret:
+        print "tftp error"
+        return 4
+
+    '''
+    run the case
+    '''
+    GOENTRY = 'go 200000'
+    miniterm.writer(GOENTRY + MINICOMCRLF)
+
+    '''
+    output of the case
+    '''
+    miniterm.reader()
+
+    '''
+    close the console
+    '''
+    miniterm.close()
 
     # print '===================  end   ======================='
     # print time.strftime('%Y_%m_%d_%H_%M_%S',time.localtime(time.time()))
     # print '=================================================='
+    return 0
+
+
+def usage():
+    helpstring = '''
+Usage: <script> [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -b, --board=number    avnet board number [1 2 3], default is 3
+  -i, --ip=IP           ip address of tftp server, default is 192.168.0.190
+  -p, --path=imagepath  image path under the tftp root path
+  -t, --time=seconds    how much time booting the image will take, default is 15 seconds
+
+Example:
+  <script> --board=1 --ip=192.168.0.190 --path=auto/ktos_tests/tests_ktos.bin
+
+'''
+    print helpstring
+    sys.exit(2)
+
 
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 if __name__ == '__main__':
-    updateArguments()
-    ret = main()
-    if ret == 55:
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hb:i:p:t:", ["help", "board=", "ip=", "path=", "time="])
+    except getopt.GetoptError as err:
+        print str(err)
+        usage()
+
+    board = 3
+    ip = "192.168.0.190"
+    casename = None
+    runtime = 15
+    for opt, value in opts:
+        if opt in ("-h", "--help"):
+            usage()
+        elif opt in ("-b", "--board"):
+            board = int(value)
+            if not ((board == 1) or (board == 2) or (board ==3)):
+                print "the board does not exist !! "
+                sys.exit(2)
+        elif opt in ("-i", "--ip"):
+            ip = value
+        elif opt in ("-p", "--path"):
+            casename = value
+        elif opt in ("-t", "--time"):
+            runtime = int(value)
+        else:
+            assert False, "unhandled option"
+
+    ret = main(board, ip, casename, runtime)
+    if ret == 0:
         sys.exit(0)
     else:
-        sys.exit(88)
+        sys.exit(1)
+
+
 
