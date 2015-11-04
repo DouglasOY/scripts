@@ -1,120 +1,86 @@
+@ECHO OFF
+SETLOCAL
+SETLOCAL ENABLEDELAYEDEXPANSION
+CALL setenv.bat
+@ECHO OFF
 
-@echo off
-SETLOCAL 
-call env.bat
-@echo off
+::::  -------------------------------------------------------------------------------
+::::  execfuntion      ARGA                    ARGB                         ARGC
+::::  -------------------------------------------------------------------------------
+CALL :execfuntion      aaaaaaaa                bbbbbb                       n
+IF %ERRORLEVEL% EQU 67 GOTO :EOF
+CALL :execfuntion      aaaaaaaa                bbbbbb                       y
+IF %ERRORLEVEL% EQU 67 GOTO :EOF
 
-set IMAGESDIR=images
-if not exist  %IMAGESDIR%  md %IMAGESDIR%
-
-set OBJDIR=%envbase%\obj
-
-set index=1
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: clean
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-set target=make first=arg1 second=arg2 clean 
-call :maketarget  %target%
-set /a index+=1
+GOTO :EOF
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: rm obj
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-call :rmobjdir
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: make
+:: execfuntion
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-set target=make first=arg1 second=arg2 
-call :maketarget  %target%
-IF %ERRORLEVEL%==67 goto :eof
-set /a index+=1
+:execfuntion
 
-set elfpath=%OBJDIR%\first\arg1\xx.elf
-call :elfexist %elfpath% xyz
-IF %ERRORLEVEL%==67 goto :eof
-COPY /Y %elfpath% %IMAGESDIR%\xx.elf
+SET arganame=%1
+SET argbname=%2
+SET flag=%3
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-::  end
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-goto :eof
-
-
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-::  maketarget
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-:maketarget
-
-echo.
-echo.
-echo ======================     test %index%   ============================
-echo.
-echo.
-
-set localcmd=%1 %2=%3  %4=%5 %6
-%localcmd%
-
-IF ERRORLEVEL 1 (
-    echo.
-    echo    ------------------------------------------------------------   
-    echo    %localcmd%
-    echo    -------------------     Failed     -------------------------
-    echo.
-    exit /b  67
-) else (
-    echo.
-    echo    ------------------------------------------------------------   
-    echo    %localcmd%
-    echo    -------------------    Succeeded  --------------------------
-    echo.
-    exit /b  0
+IF [%flag%] == [] (
+    ECHO.
+    ECHO ------------------------------------------------------------
+    ECHO Please specify "flag" to n or y !
+    ECHO ------------------------------------------------------------
+    ECHO.
+    EXIT /B  67
 )
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-::  elfexist
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-:elfexist
-
-if not exist %1 (
-    echo.
-    echo ------------------------------------------------------------   
-    echo failed to build %2 ! 
-    echo ------------------------------------------------------------   
-    echo.
-    exit /b  67
-) else (
-    echo.
-    echo ------------------------------------------------------------   
-    echo build %2 successfully.
-    echo ------------------------------------------------------------   
-    echo.
-    exit /b  0
+IF [%flag%] == [y] (
+    SET projectpath=second_!arganame!_!argbname!
+    SET libpath=first_!arganame!_!argbname!
+    SET makeimage=make ARGA=!arganame! PRJPATH=!projectpath! ARGB=!argbname! ARGC=!flag! LIBPATH=!libpath!
+) ELSE (
+    SET projectpath=first_!arganame!_!argbname!
+    SET makeimage=make ARGA=!arganame! PRJPATH=!projectpath! ARGB=!argbname!
 )
 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-::  rmobjdir 
-::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+SET makedefconfig=!makeimage! defconfig
 
-:rmobjdir 
-rm -rf obj
-del  /F /S /Q obj
+::::::::::::::: defconfig :::::::::::::::
+ECHO.
+ECHO.
+ECHO - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ECHO !makedefconfig!
+ECHO - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ECHO.
+ECHO.
+!makedefconfig!
+IF %ERRORLEVEL% GEQ 1 (
+    ECHO.
+    ECHO ################################################################################
+    ECHO failed to !makedefconfig!
+    ECHO ################################################################################
+    ECHO.
+    EXIT /B 67
+)
 
-echo.
-echo ================================
-echo ===========      rm -rf obj
-echo ================================
-echo.
+::::::::::::::: image :::::::::::::::
+ECHO.
+ECHO.
+ECHO - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ECHO !makeimage!
+ECHO - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ECHO.
+ECHO.
+!makeimage!
+IF %ERRORLEVEL% GEQ 1 (
+    ECHO.
+    ECHO ################################################################################
+    ECHO failed to !makeimage!
+    ECHO ################################################################################
+    ECHO.
+    EXIT /B 67
+)
 
-exit /b 0
+EXIT /B  0
 
-goto :eof
-
-
-
+GOTO :EOF
 
