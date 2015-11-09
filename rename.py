@@ -18,6 +18,9 @@ print os.getcwd()
 
 for f in files:
     encodingdict = chardet.detect(f)
+    if encodingdict['confidence'] < 0.9:
+        continue
+
     fcoding = encodingdict['encoding']
     utf8f = f.decode(fcoding).encode('UTF-8')
     
@@ -32,5 +35,6 @@ for f in files:
 
     os.rename(f, newf)
     print f + "    ====>    " + newf
+
 
 
