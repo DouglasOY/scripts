@@ -1,0 +1,40 @@
+
+
+grep  -rn  -i "def"   --exclude-dir=PATTERN  TARGET_DIR
+
+--exclude-dir 用法，注意两点
+
+--exclude-dir=PATTERN
+
+其中 PATTERN 是个字符串aa/bb/cc，或者是个aa，不论是哪个，最后都不能添加/
+也就是说，不能是aa/bb/cc/, 或者  aa/， 只能是aa/bb/cc, aa
+
+
+
+第二
+grep从TARGET_DIR中去寻找，
+找出来的文件路径必然是
+TARGET_DIR/aa/bb/cc
+TARGET_DIR/dd/ee/ff
+这种形式
+PATTERN 只能是字符串aa/bb/cc  dd/ee/ff 中的子集，才有过滤价值
+注意不是字符串
+TARGET_DIR/aa/bb/cc TARGET_DIR/dd/ee/ff 的子集，前面的前缀需要去掉
+
+PATTERN 是如下参数，
+aa
+bb
+cc
+aa/bb
+bb/cc
+aa/bb/cc
+都可以过滤掉aa/bb/cc
+
+
+PATTERN如果是
+TARGET_DIR/aa
+则不能过滤  aa/bb/cc
+
+
+结论，不要使用 --exclude-dir 这个选项。这个选项很奇葩，而且有很多歧义和副作用。直接使用管道再次过滤效果比较好。
+
