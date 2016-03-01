@@ -1,5 +1,11 @@
 
+remove lines included in one file from another file
+==================
+grep -Fvx -f partial.list complete.list >remaining.list
 
+
+--exclude-dir usage:
+=================
 grep  -rn  -i "def"   --exclude-dir=PATTERN  TARGET_DIR
 
 --exclude-dir 用法，注意两点
