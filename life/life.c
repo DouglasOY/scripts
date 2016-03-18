@@ -30,15 +30,16 @@ int main(void)
         count += 1;
         if (total < 30000)
         {
-            if (lottery <= 2) sum -= 1;
-            if (lottery >= 253) sum += 1;
+            /* 10 --> stardard deviation = 50 */
+            if (lottery <= 10) sum -= 1;
+            if (lottery >= 245) sum += 1;
         }
         else
         {
             printf("%d\n", sum);
             sum = 0;
-            if (lottery <= 2) sum = -1;
-            if (lottery >= 253) sum = 1;
+            if (lottery <= 10) sum = -1;
+            if (lottery >= 245) sum = 1;
             total = 1;
         }
     }
