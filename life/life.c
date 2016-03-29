@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -28,7 +27,8 @@ int main(void)
 
         if (total == 30000)
         {
-            printf("%d    %d    %d\n", (positive + negative), positive, negative);
+            /*printf("%d    %d    %d    %d\n", positive, negative, (positive + negative), (positive - negative));*/
+            printf("%d    %d\n", positive, negative);
             positive = 0;
             negative = 0;
             total = 0;
