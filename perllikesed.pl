@@ -44,7 +44,7 @@ sub write_file {
 my $filename = "filename.txt";
 open (FILE, "<$filename") or die "Can't open file: $!\n";
 while(my $line = <FILE>) {
-    print "$line" if $line =~ /xx/;
+    print $line if $line =~ /xx/;
 }
 close(FILE);
 
@@ -55,8 +55,8 @@ my $filename = "filename.txt";
 my $epoc = time();
 my $filenametmp = $filename."_tmp".$epoc;
 
-open (ORIG, "<$filename") or die "Can't open file: $!\n";
-open (TMP, ">$filenametmp") or die "Can't open file: $!\n";
+open (ORIG, "<", $filename) or die "Can't open file: $!\n";
+open (TMP, ">", $filenametmp) or die "Can't open file: $!\n";
 
 while(my $line = <ORIG>) {
     if($line =~ /to/) { 
@@ -78,8 +78,8 @@ my $filename = "filename.txt";
 my $epoc = time();
 my $filenametmp = $filename."_tmp".$epoc;
 
-open (ORIG, "<$filename") or die "Can't open file: $!\n";
-open (TMP, ">$filenametmp") or die "Can't open file: $!\n";
+open (ORIG, "<", $filename) or die "Can't open file: $!\n";
+open (TMP, ">", $filenametmp) or die "Can't open file: $!\n";
 
 while(my $line = <ORIG>) {
     if($line =~ /oo|pp/) { 
