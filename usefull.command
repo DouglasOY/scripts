@@ -8,3 +8,5 @@ while read line ; do   mplayer.exe -vo null -ao null -frames 0 -identify  "${lin
 astyle --style=linux  --indent=spaces=4 -f -p -U  -n  send.c
 astyle --style=ansi --indent=spaces=4 --indent-switches --pad-oper --pad-header --add-brackets --suffix=none receive.c 
 
+#
+find  . -mindepth 1 -maxdepth 1 -type d | grep -v git | xargs -n 1 -I "ZZZ" du -sh "ZZZ"
