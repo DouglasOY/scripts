@@ -1,0 +1,128 @@
+make a clean build for linux kernel
+
+1: generate the defconfig
+-- config from from rpm extract files. not from x86/configs/
+
+2:  clean unused files
+-- rm arch subdirectory except x86
+-- remove Documentation from root Makefile
+   rm Documentation except Makefile
+-- rm readme etc.
+-- rm .gitignore  
+ 
+ mv  .gitignore   11
+find  . -name ".gitignore" | xargs rm -f 
+mv 11 .gitignore
+
+ 
+3:  git init / git add / git commit /git clean -dfx
+
+4: make menuconfig
+-- remove firmware 
+-- remove sound
+-- remove virtualization
+-- remove drivers 
+
+-- new .config to x86_64_defconfig
+
+5: make 
+make V=1 2>&1 | tee v1.log
+
+mkdir tmp
+mv v1.log tmp
+git add tmp
+
+6:  get .cmd
+ find  . -name "*.cmd"  >> 11
+ while read f; do cat $f >> allcmd; done < 11
+ vim allcmd: sort -u
+  mv allcmd tmp/
+ mv System.map tmp/
+ git ci  -m  "allcmd System.map"
+
+7:  cfile:
+v1.log -- cfile 
+%v/\.c/d
+grep -o "[^[:space:]]\+\.c" cfile  > cfile1
+sort -u
+vim edit particular cases
+- rm -Wp,-MD,
+- rm /.c
+while read f; do realpath $f >> cfile2 ; done < cfile1
+from cfile1 --> c.single.retain
+while read f; do find  . -name $f ; done < tmp/c.single.retain
+while read f; do find  . -name $f ; done < tmp/c.single.retain  >> tmp/c.single.retain2
+
+
+8: sfile:
+v1.log -- sfile 
+%v/\.S/d
+grep -o "[^[:space:]]\+\.S" sfile  > sfile1
+sort -u
+vim edit particular cases
+- rm -Wp,-MD,
+- rm /.S
+while read f ; do realpath $f >> tmp/sfile2 ; done  < tmp/sfile1
+mv sfile2  s.retain
+
+
+9: hfile:
+grep -o "[^[:space:]]\+\.h"  allcmd  >> hfile
+sort -u
+h.single
+h.slash -- vim edit particular case
+- rm -Wp,-MD,
+- rm /usr/include
+while read f ; do realpath $f >> tmp/h.slash2 ; done  < tmp/h.slash
+-- edit h.slash2, split into single and slash also
+--  single named 11,
+    while read f ; do find . -name  $f >> tmp/22 ; done  < tmp/11
+    h.single
+    while read f ; do find  include/ -name  $f >> tmp/h.single2 ; done  < tmp/h.single
+    merge 22 h.single2 into h.single3
+mv h.slash2 and h.single3 into h.retain
+
+10:  find dirs
+no firmware samples scripts tools usr
+
+11:  rm c s  h file
+
+find  arch block crypto drivers fs include init ipc kernel lib mm net security sound usr virt -name "*.c" >> call
+find  arch block crypto drivers fs include init ipc kernel lib mm net security sound usr virt -name "*.S" >> sall
+find  arch block crypto drivers fs include init ipc kernel lib mm net security sound usr virt -name "*.h" >> hall
+
+call -- sort -u
+c.retain -- sort -u
+comm -13 c.retain  call  > c.rm
+while read f ; do git rm  $f ; done  < tmp/c.rm
+
+comm -13 s.retain  sall  > s.rm
+while read f ; do git rm  $f ; done  < tmp/s.rm
+
+comm -13 h.retain  hall  > h.rm
+while read f ; do git rm  $f ; done  < tmp/h.rm
+
+
+12：recover  c files  s files
+
+cpsrc.sh
+#!/bin/bash
+
+if [ $# -ne 2 ] ; then
+    echo "copy subdirectory half_file"
+    exit 1
+fi
+
+subdir=$1
+halffile=$2
+
+cp -u /home/douglas/lxsrc/src693/${subdir}/${halffile}* /home/douglas/lxsrc/linux310108/${subdir}/ 
+
+# grep -A1 "fatal error:" ../log1
+
+gitadd.sh
+#!/bin/bash
+
+sed -n 'H; ${x; s/\n/ /g; p;};' ../ddd > ../ddd2
+git add `cat ../ddd2` 
+rm -f ../ddd ../ddd2
