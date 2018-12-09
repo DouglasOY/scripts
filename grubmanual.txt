@@ -1,0 +1,7 @@
+set pager=1
+set root=(hd0,msdos1)
+insmod xfs
+linux /vmlinux-3.10.. root=/dev/mapper/centos-root
+linux /vmlinux-3.10.. root=UUID=EybZAs-KNqs-VWhK-JKKm-va9Q-cqW4-kiA3h5
+initrd /initramfs-3.10..
+boot 
