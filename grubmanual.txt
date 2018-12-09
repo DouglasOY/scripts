@@ -7,3 +7,6 @@ insmod xfs
 linux16 /vmlinuz-3.10.0-862.el7.x86_64 root=/dev/mapper/centos-root ro rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet LANG=en_US.UTF-8
 initrd16 /initramfs-3.10.0-862.el7.x86_64.img
 boot 
+
+# Chapter 8. DRACUT.CMDLINE(7)
+# https://mirrors.edge.kernel.org/pub/linux/utils/boot/dracut/dracut.html#dracutcmdline7
