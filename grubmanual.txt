@@ -1,9 +1,9 @@
+
+# https://linux.cn/article-3457-1.html
+
 set pager=1
 set root=(hd0,msdos1)
 insmod xfs
-linux /vmlinux-3.10.. root=/dev/mapper/centos-root
-linux /vmlinux-3.10.. root=UUID=EybZAs-KNqs-VWhK-JKKm-va9Q-cqW4-kiA3h5
-initrd /initramfs-3.10..
+linux16 /vmlinuz-3.10.0-862.el7.x86_64 root=/dev/mapper/centos-root ro rd.lvm.lv=centos/root rd.lvm.lv=centos/swap rhgb quiet LANG=en_US.UTF-8
+initrd16 /initramfs-3.10.0-862.el7.x86_64.img
 boot 
-
-# https://linux.cn/article-3457-1.html
