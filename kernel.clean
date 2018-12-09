@@ -126,3 +126,7 @@ gitadd.sh
 sed -n 'H; ${x; s/\n/ /g; p;};' ../ddd > ../ddd2
 git add `cat ../ddd2` 
 rm -f ../ddd ../ddd2
+
+# download link
+http://vault.centos.org/7.4.1708/updates/Source/SPackages/kernel-3.10.0-693.17.1.el7.src.rpm 
+
