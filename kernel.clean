@@ -48,6 +48,7 @@ sort -u
 vim edit particular cases
 - rm -Wp,-MD,
 - rm /.c
+- rm .mod.c 
 while read f; do realpath $f >> cfile2 ; done < cfile1
 from cfile1 --> c.single.retain
 while read f; do find  . -name $f ; done < tmp/c.single.retain
