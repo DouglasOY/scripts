@@ -54,6 +54,8 @@ from cfile1 --> c.single.retain
 while read f; do find  . -name $f ; done < tmp/c.single.retain
 while read f; do find  . -name $f ; done < tmp/c.single.retain  >> tmp/c.single.retain2
 
+grep  -o  " [^[:space:]]\+\.c\>"   allcmd
+
 
 8: sfile:
 v1.log -- sfile 
@@ -65,6 +67,8 @@ vim edit particular cases
 - rm /.S
 while read f ; do realpath $f >> tmp/sfile2 ; done  < tmp/sfile1
 mv sfile2  s.retain
+
+grep  -o  " [^[:space:]]\+\.S\>"   allcmd
 
 
 9: hfile:
