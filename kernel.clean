@@ -132,6 +132,11 @@ cp -u /home/douglas/lxsrc/src693/${subdir}/${halffile}* /home/douglas/lxsrc/linu
 # grep -A1 "fatal error:" ../log1
 
 gitadd.sh
+
+
+# find  . -maxdepth  ${depth}  -mindepth ${depth} -type d  -not -path "./.git/*" > ${tmpdir}
+# files=$(find ${d} -not -name "Kconfig" -a -not -name "Kbuild" -a -not -name "Makefile")
+
 #!/bin/bash
 
 sed -n 'H; ${x; s/\n/ /g; p;};' ../ddd > ../ddd2
