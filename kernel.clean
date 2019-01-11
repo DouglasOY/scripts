@@ -107,6 +107,12 @@ while read f ; do git rm  $f ; done  < tmp/s.rm
 comm -13 h.retain  hall  > h.rm
 while read f ; do git rm  $f ; done  < tmp/h.rm
 
+11.5:
+
+comm -23 c.retain  call > tmp/compiletoc
+comm -23 s.retain  sall > tmp/compiletos
+comm -23 h.retain  hall > tmp/compiletoh
+
 
 12：recover  c files  s files
 
