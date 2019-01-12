@@ -107,14 +107,14 @@ while read f ; do git rm  $f ; done  < tmp/s.rm
 comm -13 h.retain  hall  > h.rm
 while read f ; do git rm  $f ; done  < tmp/h.rm
 
-11.5:
+12:
 
 comm -23 c.retain  call > tmp/compiletoc
 comm -23 s.retain  sall > tmp/compiletos
 comm -23 h.retain  hall > tmp/compiletoh
 
 
-12：recover  c files  s files
+13：recover  c files  s files
 
 cpsrc.sh
 #!/bin/bash
@@ -131,8 +131,8 @@ cp -u /home/douglas/lxsrc/src693/${subdir}/${halffile}* /home/douglas/lxsrc/linu
 
 # grep -A1 "fatal error:" ../log1
 
+14:
 gitadd.sh
-
 
 # find  . -maxdepth  ${depth}  -mindepth ${depth} -type d  -not -path "./.git/*" > ${tmpdir}
 # files=$(find ${d} -not -name "Kconfig" -a -not -name "Kbuild" -a -not -name "Makefile")
@@ -143,6 +143,23 @@ sed -n 'H; ${x; s/\n/ /g; p;};' ../ddd > ../ddd2
 git add `cat ../ddd2` 
 rm -f ../ddd ../ddd2
 
+15:
 # download link
 http://vault.centos.org/7.4.1708/updates/Source/SPackages/kernel-3.10.0-693.17.1.el7.src.rpm 
 
+16:
+#  for depth in `seq 2  9`; do echo $depth;   find  . -maxdepth  ${depth}  -mindepth ${depth} -type d  -not -path "./.git/*" > tmp_${depth};   done
+
+#!/bin/bash
+i=9
+while [ $i -gt 1 ] ; do
+    if [ -s "tmp_$i" ] ; then
+        while read d ; do
+            files=$(find ${d} -not -name "Kconfig" -a -not -name "Kbuild" -a -not -name "Makefile")
+            if [ "x$files" == "x${d}" ] ; then
+                git rm -r ${d}
+            fi
+        done < tmp_$i
+    fi
+    i=$((i-1))
+done
