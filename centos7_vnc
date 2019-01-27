@@ -1,0 +1,20 @@
+mkdir -p /root/.Xauthority
+
+firewall-cmd --permanent --add-service vnc-server
+firewall-cmd --state
+systemctl restart firewalld.service
+
+yum install tigervnc-server -y
+cp /lib/systemd/system/vncserver@.service /etc/systemd/system/vncserver@:1.service
+cd /etc/systemd/system/
+vim vncserver@\:1.service 
+systemctl daemon-reload
+
+vncpasswd 
+
+systemctl enable vncserver@:1.service
+systemctl start vncserver@:1.service
+systemctl status vncserver@:1.service
+
+/usr/sbin/runuser -l root -c /usr/bin/vncserver 1
+https://www.linuxidc.com/Linux/2017-05/143324.htm  
