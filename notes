@@ -4,3 +4,9 @@
 
 2: lantern
 #  https://github.com/getlantern/download
+
+# udevadm info -a -p $(udevadm info -q path -n /dev/sda4)
+
+# while read l; do echo $l;  n=${l/:/_}; lspci -v -s $l >  ${n}.dev;  done  < bdf
+
+# 
