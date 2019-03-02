@@ -23,3 +23,8 @@
  systemd-analyze dot --to-pattern="*.target" --from-pattern="*.target"  >  target.dep.dot
  dot -Tjpg -otarget.dep.jpg  target.dep.dot 
  dot -Tjpg -otarget.noshut.jpg  target.noshut.dot 
+
+# 
+ qemu-system-x86_64  -nographic -kernel  bzImage   -initrd rootfs -append "root=/dev/ram rdinit=/helloworld console=ttyS0 "
+ 
+ 
