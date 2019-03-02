@@ -10,3 +10,16 @@
 # while read l; do echo $l;  n=${l/:/_}; lspci -v -s $l >  ${n}.dev;  done  < bdf
 
 # 
+  systemd-analyze dot "local-fs.*"  > local-fs.dot
+  dot -Tjpg -olocal-fs.jpg   local-fs.dot 
+  systemd-analyze dot  --order  "local-fs.*"  > local-fs.order.dot
+  dot -Tjpg -olocal-fs.order.jpg  local-fs.order.dot 
+  systemd-analyze dot  --require  "local-fs.*"  > local-fs.require.dot
+  dot -Tjpg -olocal-fs.require.jpg  local-fs.require.dot 
+  systemd-analyze dot  --order  "local-fs.*"  --from-pattern="local-fs.*" >>  localfs.after.dot
+  dot -Tjpg -olocalfs.after.jpg  localfs.after.dot 
+
+#
+ systemd-analyze dot --to-pattern="*.target" --from-pattern="*.target"  >  target.dep.dot
+ dot -Tjpg -otarget.dep.jpg  target.dep.dot 
+ dot -Tjpg -otarget.noshut.jpg  target.noshut.dot 
