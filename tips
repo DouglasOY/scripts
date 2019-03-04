@@ -14,3 +14,61 @@ CHCP是一个计算机指令，能够显示或设置活动代码页编号。
 
 # syscall
 grep -rn  "SYSCALL_DEFINE[0-9](ptrace"  ./*
+
+# cat ifcfg-enp5s0 
+TYPE=Ethernet
+PROXY_METHOD=none
+BROWSER_ONLY=no
+BOOTPROTO=none
+DEFROUTE=yes
+IPV4_FAILURE_FATAL=no
+IPV6INIT=yes
+IPV6_AUTOCONF=yes
+IPV6_DEFROUTE=yes
+IPV6_FAILURE_FATAL=no
+IPV6_ADDR_GEN_MODE=stable-privacy
+NAME=enp5s0
+UUID=f981e110-2f0a-49e7-9ac2-9ba99f16da4e
+DEVICE=enp5s0
+ONBOOT=yes
+BRIDGE=br0
+
+# cat ifcfg-br0 
+TYPE=Bridge
+BOOTPROTO=none
+NAME=br0
+DEVICE=br0
+ONBOOT=yes
+IPADDR=10.10.10.10
+NETMASK=255.255.255.0
+STP=on
+DELAY=0
+
+# cat qemu-ifup 
+#!/bin/bash
+switch=br0
+
+if [ -n "$1" ] ; then
+    #tunctl -u $(whoami) -t $1
+    ifconfig $1 up
+    sleep 1
+    brctl addif $switch $1
+    exit 0
+else
+    echo 'Error: no specifed interface.'
+    exit 1
+fi
+
+# cat qemu-ifdown 
+#!/bin/bash
+switch=br0
+
+if [ -n $1 ] ; then
+    tunctl -d $1
+    brctl delif ${switch} $1
+    ip link set $1 down
+    exit 0
+else
+    echo "Error: no interface specified"
+    exit 1
+fi
