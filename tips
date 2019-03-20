@@ -74,3 +74,5 @@ else
 fi
 
 # qemu-system-x86_64 -drive file=centos7.img,format=qcow2  -cdrom /opt/CentOS-7-x86_64-DVD-1804.iso  -enable-kvm -m 1G -net nic -net tap,ifname=tap1,script=etc/qemu-ifup,downscript=etc/qemu-ifdown
+
+# https://github.com/bianjp/popup-dict
