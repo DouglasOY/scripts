@@ -76,3 +76,4 @@ fi
 # qemu-system-x86_64 -drive file=centos7.img,format=qcow2  -cdrom /opt/CentOS-7-x86_64-DVD-1804.iso  -enable-kvm -m 1G -net nic -net tap,ifname=tap1,script=etc/qemu-ifup,downscript=etc/qemu-ifdown
 
 # https://github.com/bianjp/popup-dict
+# https://buildlogs.centos.org/c7.1708.u.x86_64/kernel/20180125201039/3.10.0-693.17.1.el7.x86_64/kernel-debuginfo-common-x86_64-3.10.0-693.17.1.el7.x86_64.rpm 
