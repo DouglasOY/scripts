@@ -77,3 +77,10 @@ fi
 
 # https://github.com/bianjp/popup-dict
 # https://buildlogs.centos.org/c7.1708.u.x86_64/kernel/20180125201039/3.10.0-693.17.1.el7.x86_64/kernel-debuginfo-common-x86_64-3.10.0-693.17.1.el7.x86_64.rpm 
+
+
+No kdump initial ramdisk found.
+Rebuilding /boot/initramfs-3.10.0-862.el7.x86_64kdump.img
+dracut-033-535.el7
+Executing: /usr/sbin/dracut --hostonly --hostonly-cmdline --hostonly-i18n -o "plymouth dash resume ifcfg" --mount "/dev/mapper/centos-root /sysroot ext4 defaults" --no-hostonly-default-device -f /boot/initramfs-3.10.0-862.el7.x86_64kdump.img 3.10.0-862.el7.x86_64
+
