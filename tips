@@ -84,3 +84,106 @@ Rebuilding /boot/initramfs-3.10.0-862.el7.x86_64kdump.img
 dracut-033-535.el7
 Executing: /usr/sbin/dracut --hostonly --hostonly-cmdline --hostonly-i18n -o "plymouth dash resume ifcfg" --mount "/dev/mapper/centos-root /sysroot ext4 defaults" --no-hostonly-default-device -f /boot/initramfs-3.10.0-862.el7.x86_64kdump.img 3.10.0-862.el7.x86_64
 
+
+
+
+
+
+The command name of the process currently executing on the CPU that initiated the panic. If this is "swapper" then the CPU was idle at the time and has probably panicked within an interrupt handler.
+
+
+
+
+1、硬件问题
+使用了 SCSI-device 并且使用了未知命令
+
+#WDIOS_TEMPPANIC Kernel panic on temperature trip
+# 
+# The SETOPTIONS call can be used to enable and disable the card
+# and to ask the driver to call panic if the system overheats.
+# 
+# If one uses a SCSI-device of unsupported type/commands, one
+# immediately runs into a kernel-panic caused by Command Error. To better
+# understand which SCSI-command caused the problem, I extended this
+# specific panic-message slightly.
+# 
+#read/write causes a command error from
+# the subsystem and this causes kernel-panic
+
+2、系统过热
+如果系统过热会调用panci，系统挂起
+
+#WDIOS_TEMPPANIC Kernel panic on temperature trip
+# 
+# The SETOPTIONS call can be used to enable and disable the card
+# and to ask the driver to call panic if the system overheats.
+
+3、文件系统引起
+
+#A variety of panics and hangs with /tmp on a reiserfs filesystem
+#Any other panic, hang, or strange behavior
+#
+# It turns out that there's a limit of six environment variables on the
+# kernel command line. When that limit is reached or exceeded, argument
+# processing stops, which means that the 'root=' argument that UML
+# usually adds is not seen. So, the filesystem has no idea what the
+# root device is, so it panics.
+# The fix is to put less stuff on the command line. Glomming all your
+# setup variables into one is probably the best way to go.
+
+Linux内核命令行有6个环境变量。如果即将达到或者已经超过了的话 root= 参数会没有传进去
+启动时会引发panics错误。
+vi grub.conf
+#####################
+title Red Hat Enterprise Linux AS (2.6.9-67.0.15.ELsmp)
+root (hd0,0)
+kernel /boot/vmlinuz-2.6.9-67.0.15.ELsmp ro root=LABEL=/
+initrd /boot/initrd-2.6.9-67.0.15.ELsmp.img
+title Red Hat Enterprise Linux AS-up (2.6.9-67.EL)
+root (hd0,0)
+kernel /boot/vmlinuz-2.6.9-67.EL ro root=LABEL=/
+initrd /boot/initrd-2.6.9-67.EL.img
+
+应该是 其中的 root=LABEL=/ 没有起作用。
+
+
+4、内核更新
+网上相关文档多半是因为升级内核引起的，建议使用官方标准版、稳定版
+另外还有使用磁盘的lvm 逻辑卷，添加CPU和内存。可在BIOS中禁掉声卡驱动等不必要的设备。
+
+
+也有报是ext3文件系统的问题。
+解决： 手工编译内核，把 ext3相关的模块都编译进去，
+
+
+5、处理panic后的系统自动重启
+
+panic.c源文件有个方法，当panic挂起后，指定超时时间，可以重新启动机器
+
+if (panic_timeout > 0)
+{
+int i;
+/*
+* Delay timeout seconds before rebooting the machine.
+* We can't use the "normal" timers since we just panicked..
+*/
+printk(KERN_EMERG "Rebooting in %d seconds..",panic_timeout);
+for (i = 0; i < panic_timeout; i++) {
+touch_nmi_watchdog();
+mdelay(1000);
+}
+
+修改方法：
+/etc/sysctl.conf文件中加入
+kernel.panic = 30 #panic错误中自动重启，等待时间为30秒
+kernel.sysrq=1 #激活Magic SysRq！ 否则，键盘鼠标没有响应
+
+--------------------- 
+
+作者：willand1981 
+
+来源：CSDN 
+
+原文：https://blog.csdn.net/willand1981/article/details/5663356 
+
+版权声明：本文为博主原创文章，转载请附上博文链接！
