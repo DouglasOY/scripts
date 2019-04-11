@@ -178,12 +178,14 @@ mdelay(1000);
 kernel.panic = 30 #panic错误中自动重启，等待时间为30秒
 kernel.sysrq=1 #激活Magic SysRq！ 否则，键盘鼠标没有响应
 
---------------------- 
-
-作者：willand1981 
-
-来源：CSDN 
-
 原文：https://blog.csdn.net/willand1981/article/details/5663356 
 
-版权声明：本文为博主原创文章，转载请附上博文链接！
+
+
+https://www.slideshare.net/liranbh/android-internals-65695961
+
+Android internals
+
+https://www.slideshare.net/HaoRanLiu12
+
+
