@@ -48,3 +48,35 @@ static void __exit mymodule_stackfull_exit(void)
 
 module_init(mymodule_stackfull_init);
 module_exit(mymodule_stackfull_exit);
+
+/*
+
+==== /sys/kernel/debug/tracing/stack_max_size
+15592
+
+
+==== /sys/kernel/debug/tracing/stack_trace
+        Depth    Size   Location    (461 entries)
+        -----    ----   --------
+  0)    15592     144   vt_console_print+0x7f/0x430
+  1)    15448      64   console_unlock+0x468/0x4b0
+  2)    15384     112   vprintk_emit+0x3c4/0x510
+  3)    15272      16   vprintk_default+0x29/0x40
+  4)    15256      96   printk+0x60/0x77
+  5)    15160      32   mymodule_add_recursion+0x22/0x4a [stackfull]
+  6)    15128      32   mymodule_add_recursion+0x2e/0x4a [stackfull]
+  7)    15096      32   mymodule_add_recursion+0x2e/0x4a [stackfull]
+  8)    15064      32   mymodule_add_recursion+0x2e/0x4a [stackfull]
+
+*/
+
+/*
+obj-m += stackfull.o
+
+all:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules
+
+clean:
+	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) clean
+
+*/
