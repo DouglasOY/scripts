@@ -190,4 +190,6 @@ https://www.slideshare.net/HaoRanLiu12
 
 # auditctl
 auditctl -a always,exit -F arch=b64 -S open -F dir=/home/cloud/tmp -F auid=1000
+auditctl -a always,exit -F arch=b64 -S open -F path=/home/cloud/tmp/ps.eF -F auid=1000
+
 ausearch -ts 07/15/2018 20:37:00
