@@ -1,0 +1,23 @@
+datafile='data1.txt'
+
+set title "标签图" font "bold,13" textcolor rgbcolor "red"
+set xlabel "X轴" font "bold,12" textcolor rgbcolor "blue"
+set ylabel "Y轴" font "bold,12" textcolor rgbcolor "blue"
+
+set key box  font "bold,10" textcolor rgbcolor "blue"
+set key left top  width 1 height 1
+
+
+set border front linestyle 10
+
+set grid lw 2
+
+#set xrange [0:5]
+#set yrange [0:3010000]
+
+# set xtics ('0' 0, '5' 5, '10' 10, '15' 15, '20' 20, '25' 25, '30' 30, '35' 35, '40' 40, '45' 45, '50' 50, '55' 55, '60' 60, '65' 65, '70' 70, '75' 75, '80' 80, '85' 85)
+# set ytics ('0' 0, '50万' 500000, '100万' 1000000, '150万' 1500000, '200万' 2000000, '250万' 2500000, '300万' 3000000)
+
+
+plot datafile using 1:2:3 with labels center offset 5,0.5 notitle, datafile using 1:2 title "当年度增额" with lp ls 7 linewidth 3
+
