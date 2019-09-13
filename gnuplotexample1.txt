@@ -58,6 +58,8 @@ plot sin(x) with linespoints pointtype 5  smooth acsplines, cos(x) t 'cosine' w 
 ## 15 画等高线图
 ## 16 画pm3d图
 
+https://blog.csdn.net/bill_chuang/article/details/18215051
+gnuplot中的一些技巧
 
 在图中插入文字
 gnuplot> set label ‘sin(x)’ at 0.5,0.5  %在坐标（0.5,0.5）处加入字符串’sin(x)’。
