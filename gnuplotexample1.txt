@@ -59,4 +59,16 @@ plot sin(x) with linespoints pointtype 5  smooth acsplines, cos(x) t 'cosine' w 
 ## 16 画pm3d图
 
 
+在图中插入文字
+gnuplot> set label ‘sin(x)’ at 0.5,0.5  %在坐标（0.5,0.5）处加入字符串’sin(x)’。
+在输出为.ps或.eps文件时，如果在set term 的语句中加入了enhanced选现，则可以插入上下标、希腊字母和特殊符号。上下标的插入和latex中的方法是一样的。
+如果要在图中每个点上都添加标签，可以
+gnuplot>plot 'file.dat' using 1:2:3 with labels %其中1,2列分别表示横坐标和总坐标值，第三列作为标签添加到每个点上，当然第三列必须时双引号扩起来的字符串，比如
+1,2,"1"
+3,4,"2"
+....
+如果第三列是数字，可以用stringcolumn(3)转换
+gnuplot>plot 'file.dat' using 1:2:(stringcolumn(3)) with labels
+若既想把点画出来，又想在点上添加标签，目前我的做法时分别画，因为with后面labels和<type>不能兼容，这个没有Matlab好，即
+gnuplot>plot ‘file.dat’ using 1:2 with points ps 3,plot 'file.dat' using 1:2:3 with labels
 
