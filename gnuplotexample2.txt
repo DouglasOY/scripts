@@ -1,0 +1,115 @@
+# 画一个dat, 或者多个 dat
+# 和 plot function 基本一样
+# 核心就是 help plot using
+
+set term wxt linewidth 2 size 1024,768
+
+datafile1='1.dat'
+datafile2='2.dat'
+datafile3='3.dat'
+
+
+# set datafile separator ','
+# set datafile missing 'NaN'  #  The IEEE floating point not-a-number
+set title "基金净值图"
+set style fill pattern 1 border
+
+set grid back linestyle 81
+set border 3 back linestyle 80 
+
+## set style function <style>
+## set style data <style>
+## show style function
+## show style data
+
+## set style arrow <n> <arrowstyle>
+## set style boxplot <boxplot style options>
+## set style circle radius <size> {clip|noclip}
+## set style ellipse size <size> units {xy|xx|yy} {clip|noclip}
+## set style fill <fillstyle>
+## set style histogram <histogram style options>
+## set style line <n> <linestyle>
+## set style rectangle <object options> <linestyle> <fillstyle>
+## set style textbox {<n>} {opaque|transparent} {{no}border} {fillcolor}
+
+
+set output "16.pdf"
+set xlabel "服务器数量" font ",20"
+set ylabel "应用层吞吐量 (Mbps)" font ",20" offset 1.5,0,0
+set key box 
+set key left top
+
+set xrange [-20:20]
+set yrange [-20:20]
+
+set arrow from 0.0,0.0 to 6,8 lt 23 lw 2
+
+plot datafile1 using 1:2 title "line_a" w lp ls 5, datafile2 u 1:2 t "line_b" w lp ls 22, datafile3 u 1:2 title "line_c" w lp ls 32 smooth csplines  
+
+
+## datafile='value.txt'
+## set title "ttt" font "bold,15" textcolor rgbcolor "red"
+## set xlabel "XXX" font "bold,12" textcolor rgbcolor "blue"
+## set ylabel "YYY" font "bold,12" textcolor rgbcolor "blue"
+## 
+## set key box  font "bold,12" textcolor rgbcolor "blue"
+## set key left top width 2 height 2
+## 
+## set border front linestyle 10
+## set grid lw 2
+## 
+## set xrange [0:100]
+## set yrange [0:45000000]
+## 
+## set xtics ('0' 0, '1' 1, '10' 10, '20' 20, '30' 30, '40' 40, '50' 50, '60' 60, '70' 70, '80' 80, '90' 90, '100' 100)
+## set ytics ('0' 0, '500万' 5000000, '1000万' 10000000, '1500万' 15000000, '2000万' 20000000, '2500万' 25000000, '3000万' 30000000, '3500万' 35000000, '4000万' 40000000, '4500万' 45000000)
+## 
+## ## plot datafile using 1:2 title "1111" with lp ls 3 linewidth 3 smooth csplines, datafile u 1:3 title "222222" with points pt 9, datafile using 1:4 title "333" with lp ls 7 linewidth 3 smooth csplines
+## 
+## plot datafile using 1:2 title "1111" with lp ls 3 linewidth 3 smooth csplines, datafile u 1:3 title "2222222" with lp ls 1 linewidth 3 smooth csplines, datafile using 1:4 title "333" with lp ls 7 linewidth 3
+
+## ## 画 3d 图， 等高线
+## datafile='y2.dat'
+## 
+## set title "TTT" font "bold,15" textcolor rgbcolor "red"
+## set xlabel "XXX" font "bold,12" textcolor rgbcolor "blue"
+## set ylabel "YYY" font "bold,12" textcolor rgbcolor "blue"
+## set zlabel "ZZZ" font "bold,12" textcolor rgbcolor "blue"
+## 
+## set border front linestyle 10
+## 
+## set dgrid3d 20,20
+## 
+## set contour
+## 
+## set cntrparam levels   incremental -2,0.2,2 
+## 
+## ## unset surface 
+## ## set view 0,0
+## 
+## # splot datafile using 3:1:2  title "Values" with lp ls 3 linewidth 3 smooth csplines
+## splot datafile using 3:1:2  title "Values" with lines ls 1 linewidth 3
+
+
+
+## ## 画 pm3d 图
+## set title "TTT" font "bold,15" textcolor rgbcolor "red"
+## set xlabel "XXX" font "bold,12" textcolor rgbcolor "blue"
+## set ylabel "YYY" font "bold,12" textcolor rgbcolor "blue"
+## set zlabel "ZZZ" font "bold,12" textcolor rgbcolor "blue"
+## 
+## set border front linestyle 10
+## 
+## 
+## set pm3d
+## set isosamples 30,30
+## 
+## ## set view 0,0
+## 
+## splot x**2+2*(y**2)
+## 
+## ## datafile='y2.dat'
+## ## set style data pm3d
+## ## splot datafile using 3:1:2  title "Values" with lines ls 1 linewidth 3
+
+## plot datafile using 1:2:(sprintf("%d", $2)) with labels center offset 5,-1 notitle, datafile using 1:2 title "================" with lp ls 7 linewidth 3 

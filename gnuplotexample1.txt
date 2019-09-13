@@ -1,0 +1,62 @@
+# 画一个函数, 或者多个函数
+# 两种方式, 第一种是 plot func with options, 第二种是 set options, plot func
+# 核心就是 set XXX
+set title 'My first graph'
+set xlabel 'Angle, in degrees'
+set ylabel 'sin(angle)'
+
+set xrange [-pi:pi]
+set xtics ('0' 0, '90' pi/2, '-90' -pi/2, '45' pi/4,'-45' -pi/4,'135' 3*pi/4,'-135' -3*pi/4)
+set grid
+
+# help set key
+set key top left
+set key box
+# set key outside vertical
+
+# set size ratio 2
+
+# help plot with
+# with <style> { {linestyle | ls <line_style>}
+#                | {{linetype  | lt <line_type>}
+#                   {linewidth | lw <line_width>}
+#                   {linecolor | lc <colorspec>}
+#                   {pointtype | pt <point_type>}
+#                   {pointsize | ps <point_size>}
+#                   {arrowstyle | as <arrowstyle_index>}
+#                   {fill | fs <fillstyle>} {fillcolor | fc <colorspec>}
+#                   {nohidden3d} {nocontours} {nosurface}
+#                   {palette}}
+#              }
+
+# help smooth
+plot sin(x) with linespoints pointtype 5  smooth acsplines, cos(x) t 'cosine' w boxes lt 4
+
+
+## with	w	with子句指定样式
+## line	l	用线画
+## point	p	用点画
+## linespoints	lp	用线和点画
+## linetype	lt	线的样式
+## linewidth	lw	线的宽度
+## pointtype	pt	点的样式
+## pointsize	ps	点的大小
+
+## 1 plot
+## 2 同时画多条曲线
+## 3 图例
+## 4 关于坐标轴
+## 5 在图中插入文字
+## 6 X轴时间
+## 7 在图中添加直线和箭头
+## 8 图的大小和位置
+## 9 画三维图
+## 10 将图形输出到文件
+## 11 同时画多个图画
+## 13 利用左右两边的y轴分别画图
+## 14 插入希腊字母和特殊符号
+## 15 画等高线图
+## 16 画pm3d图
+
+
+
