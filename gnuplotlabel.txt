@@ -27,3 +27,11 @@ set output "file.png"
 
 plot datafile using 1:2:3 with labels center offset 5,0.5 notitle, datafile using 1:2 title "当年度增额" with lp ls 7 linewidth 3
 set output
+
+# set style fill solid
+#set palette rgbformulae 7,5,15
+#set palette rgbformulae 3,11,6
+#set palette rgbformulae 33,13,10
+#plot datafile  using 2 title "Red" with histograms
+
+# http://gnuplot.sourceforge.net/demo/
