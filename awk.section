@@ -1,0 +1,55 @@
+=========data.txt===========
+
+[a]
+printinfo = yes
+path = /root/
+location = 
+input = sogo
+
+
+[b]
+printinfo = yes
+path = /home/
+location = 
+input = sogo
+
+
+[c]
+printinfo = yes
+path = /root/
+location = 
+input = sogo
+
+
+[d]
+printinfo = yes
+path = /home/
+location = 
+input = sogo
+
+
+[e]
+printinfo = yes
+path = /root/
+location = 
+input = sogo
+
+=========awk===========
+
+awk ' 
+{
+    if (match($0, /\[.+\]/)) {
+        if (matchpath == 1) {
+            print section;
+            matchpath = 0;
+        } 
+        section = $0;        
+    } else {
+        section = section"\n"$0;
+        if (match($0, /path\s*=\s*\/home/)) {
+            matchpath = 1;
+        }
+    }
+}' data.txt
+
+
