@@ -1,0 +1,9 @@
+floppya: 1_44="F:\programs\share\art7.img", status=inserted
+boot: floppy
+romimage: file="F:\programs\bochs\BIOS-bochs-latest"
+vgaromimage: file="F:\programs\bochs\VGABIOS-lgpl-latest"
+megs:64
+log: "F:\programs\tmp\bochsout.txt"
+port_e9_hack: enabled=1
+
+# qemu\qqqqq.exe -drive format=raw,index=0,if=floppy,file=share\fd.img
