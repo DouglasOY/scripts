@@ -7,3 +7,17 @@ log: "F:\programs\tmp\bochsout.txt"
 port_e9_hack: enabled=1
 
 # qemu\qqqqq.exe -drive format=raw,index=0,if=floppy,file=share\fd.img
+
+F:\programs\qemu\qqqqq.exe -drive format=raw,index=0,if=floppy,file="F:\programs\share\art8.img"
+
+F:\programs\bochs\bochs.exe -f F:\programs\art7.bxrc
+
+/cygdrive/f/programs/qemu/qqqqq.exe -drive format=raw,index=0,if=floppy,file="F:\programs\share\art8.img"
+
+F:\programs\qemu\qqqqq.exe -kernel "F:\programs\share\sos7.elf" -S -s 
+
+
+gdb sos7.elf
+target remote:1234
+b sos_main
+c 
