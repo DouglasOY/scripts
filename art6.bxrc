@@ -6,6 +6,7 @@ megs:64
 log: "F:\programs\tmp\bochsout.txt"
 port_e9_hack: enabled=1
 ata0-master: type=disk, path="F:\programs\bx512m.img", mode=flat
+keyboard: type=mf, serial_delay=250, paste_delay=100000, user_shortcut=none
 
 
 =====================================================================
