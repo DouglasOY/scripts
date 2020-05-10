@@ -197,3 +197,5 @@ ausearch -ts 07/15/2018 20:37:00
 # astyle
 find  . -iname "*.[c|h]" -print0 | xargs -0 -n1 -I "ZZZZZ" astyle --style=ansi --indent=spaces=4 --indent-switches --pad-oper --pad-header --add-brackets --suffix=none  "ZZZZZ"
 
+https://mp.weixin.qq.com/s/cX1ciAsYZ0WZm6baFDl-NA 
+
