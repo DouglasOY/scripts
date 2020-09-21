@@ -199,3 +199,8 @@ find  . -iname "*.[c|h]" -print0 | xargs -0 -n1 -I "ZZZZZ" astyle --style=ansi -
 
 https://mp.weixin.qq.com/s/cX1ciAsYZ0WZm6baFDl-NA 
 
+
+http://web.mit.edu/kerberos/dialogue.html
+https://www.anquanke.com/post/id/171552#h3-5
+https://www.zhihu.com/question/22177404
+
